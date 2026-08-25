@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yoto Radio 📻</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="page-header">
+    <h1>Yoto Radio 📻</h1>
+    <p class="subtitle">Turn radio stations in Yoto cards.</p>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <section class="account">
+        <p id="account-status" class="account-status">Not connected to Yoto.</p>
+        <button id="login-button" type="button" class="login-button">Log in with Yoto</button>
+      </section>
+
+      <form id="search-form" class="search-form">
+        <input id="search-name" type="text" placeholder="Station name (e.g. BBC Radio 1)" autocomplete="off" />
+        <select id="search-country">
+          <option value="">Any country</option>
+        </select>
+        <input id="search-tag" type="text" placeholder="Tag (optional, e.g. jazz)" autocomplete="off" />
+        <button type="submit">Search</button>
+      </form>
+
+      <section id="selection" class="selection" hidden>
+        <h2>Your Card <span id="selection-count" class="selection-count"></span></h2>
+        <p class="selection-hint">Each station becomes its own track on the card, in this order.</p>
+        <ol id="selection-list" class="selection-list"></ol>
+        <button id="create-card-button" type="button" class="create-card-button" disabled title="Yoto login isn't wired up yet">
+          Create Yoto Card
+        </button>
+      </section>
+    </aside>
+
+    <div class="content">
+      <p id="status" class="status"></p>
+      <section id="results" class="results"></section>
+    </div>
+  </main>
+
+  <footer class="page-footer">
+    <p>© 2026. Not affiliated with Yoto Ltd. Source on <a href="https://github.com/dochoffiday/YotoRadio" target="_blank">GitHub</a>. <a href="privacy.html">Privacy Policy</a>.</p>
+    <p>Powered by <a href="https://www.radio-browser.info/" target="_blank">RadioBrowser</a>.</p>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Yoto Radio 📻</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="page-header">
+    <h1>Yoto Radio 📻</h1>
+    <p class="subtitle">Privacy Policy</p>
+  </header>
+
+  <main class="policy">
+    <p><a href="index.html">← Back to the app</a></p>
+
+    <p><em>Last updated 2026-08-25.</em></p>
+
+    <p>Yoto Radio Station Picker ("this app") is a small, static, open-source tool that turns an internet radio
+    station into a Yoto MYO card. It has no backend server and no database of its own — it runs entirely in your
+    browser.</p>
+
+    <h2>What this app does not do</h2>
+    <ul>
+      <li>It does not have user accounts, cookies, analytics, or trackers.</li>
+      <li>It does not collect, log, or store your personal data anywhere. There is no server to store it on.</li>
+      <li>It never sees or handles your Yoto password — you log in on Yoto's own login page.</li>
+    </ul>
+
+    <h2>What data is involved, and where it goes</h2>
+    <ul>
+      <li><strong>Station search.</strong> Your search terms (station name, country, tag) are sent directly from
+        your browser to <a href="https://www.radio-browser.info/" target="_blank">radio-browser.info</a>'s public
+        API. This app never sees or relays that traffic — it's a direct browser-to-radio-browser.info request.</li>
+      <li><strong>Yoto login.</strong> Logging in redirects you to Yoto's own login page (an OAuth2 flow with
+        PKCE). Yoto issues an access token (and optionally a refresh token) back to your browser, which this app
+        stores in your browser's <code>localStorage</code> so you don't have to log in every visit. Those tokens
+        are only ever sent to Yoto's own API, straight from your browser — never to any server this app controls,
+        because none exists.</li>
+      <li><strong>Card creation.</strong> When you build a card, the station details you selected are sent
+        directly from your browser to Yoto's content API to create the card on your account.</li>
+      <li><strong>Fonts.</strong> The page font (Fredoka) loads from Google Fonts
+        (<code>fonts.googleapis.com</code> / <code>fonts.gstatic.com</code>), subject to
+        <a href="https://policies.google.com/privacy" target="_blank">Google's own privacy policy</a>.</li>
+    </ul>
+
+    <h2>Data retention</h2>
+    <p>Your Yoto tokens live only in your own browser's local storage until you click "Log out" or clear your
+    browser's site data. Nothing is retained anywhere else, because this app has nowhere else to retain it.</p>
+
+    <h2>Children's privacy</h2>
+    <p>Yoto is a product designed for children, but this app itself does not knowingly collect any personal
+    information from anyone, child or adult. All it does is help you point a Yoto card at a radio stream.</p>
+
+    <h2>Questions</h2>
+    <p>This is an independent, unofficial project — not affiliated with Yoto Ltd. Source code, and a place to
+    raise questions or issues, is on
+    <a href="https://github.com/dochoffiday/YotoRadio" target="_blank">GitHub</a>.</p>
+  </main>
+
+  <footer class="page-footer">
+    <p>© 2026. Not affiliated with Yoto Ltd. Source on <a href="https://github.com/dochoffiday/YotoRadio" target="_blank">GitHub</a>.</p>
+    <p>Powered by <a href="https://www.radio-browser.info/" target="_blank">RadioBrowser</a>.</p>
+  </footer>
+</body>
+</html>

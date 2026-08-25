@@ -1,0 +1,401 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --fg: #201c1a;
+  --muted: #766860;
+  --card-bg: #ffffff;
+  --border: #e8ded9;
+  --accent: #f45436;
+  --good: #22a04c;
+  --warn: #da8e0c;
+  --bad: #b3261e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+body {
+  margin: 0;
+  font-family: "Fredoka", system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.page-header {
+  padding: 2rem 1.5rem 1rem;
+  text-align: center;
+}
+
+.page-header h1 {
+  margin: 0 0 0.25rem;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin: 0;
+}
+
+.page-footer {
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.page-footer a {
+  color: var(--accent);
+}
+
+main {
+  max-width: 1200px;
+  margin: 2rem auto 0 auto;
+  padding: 0 1.5rem 3rem;
+}
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.sidebar {
+  flex: 0 0 280px;
+  position: sticky;
+  top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.policy {
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.policy h2 {
+  margin-top: 2rem;
+  font-size: 1.15rem;
+}
+
+.policy ul {
+  padding-left: 1.3rem;
+}
+
+.policy li + li {
+  margin-top: 0.5rem;
+}
+
+.policy a {
+  color: var(--accent);
+}
+
+.policy code {
+  background: var(--border);
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.9em;
+}
+
+.account {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.account-status {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.login-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: white;
+  color: var(--accent);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.login-button:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.search-form input,
+.search-form select {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: var(--bg);
+}
+
+.search-form button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.search-form button:hover {
+  opacity: 0.9;
+}
+
+.status {
+  color: var(--muted);
+  min-height: 1.2em;
+  margin-top: 0;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.station-card {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+}
+
+@media (max-width: 800px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: static;
+    width: 100%;
+    flex: none;
+  }
+}
+
+.station-card--unsupported {
+  opacity: 0.6;
+}
+
+.station-favicon {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: var(--bg);
+}
+
+.station-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.station-name {
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.station-meta {
+  margin: 0 0 0.4rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.station-badges {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  font-size: 0.72rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  color: white;
+}
+
+.badge--good {
+  background: var(--good);
+}
+
+.badge--warn {
+  background: var(--warn);
+}
+
+.badge--bad {
+  background: var(--bad);
+}
+
+.station-actions {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.play-button,
+.add-button {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  cursor: pointer;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.play-button:disabled,
+.add-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.play-button:hover:not(:disabled),
+.add-button:hover:not(:disabled) {
+  background: var(--border);
+}
+
+.add-button--added {
+  background: var(--good);
+  border-color: var(--good);
+  color: white;
+}
+
+.add-button--added:hover:not(:disabled) {
+  background: var(--good);
+  opacity: 0.9;
+}
+
+.selection {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.selection h2 {
+  margin: 0 0 0.2rem;
+  font-size: 1.1rem;
+}
+
+.selection-count {
+  color: var(--muted);
+  font-weight: normal;
+  font-size: 0.9rem;
+}
+
+.selection-hint {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.selection-list {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.selection-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.selection-item-name {
+  overflow-wrap: anywhere;
+}
+
+.selection-item-controls {
+  display: flex;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.selection-item-controls button {
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  cursor: pointer;
+}
+
+.selection-item-controls button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.selection-item-controls button:hover:not(:disabled) {
+  background: var(--border);
+}
+
+.create-card-button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.create-card-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
