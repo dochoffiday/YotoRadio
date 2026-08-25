@@ -4,7 +4,7 @@ cache-control headers, which leads the browser to silently reuse stale
 module imports across reloads."""
 
 import sys
-from http.server import HTTPServer, SimpleHTTPRequestHandler
+from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 
 
 class NoCacheHandler(SimpleHTTPRequestHandler):
@@ -15,4 +15,4 @@ class NoCacheHandler(SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 5173
-    HTTPServer(("", port), NoCacheHandler).serve_forever()
+    ThreadingHTTPServer(("", port), NoCacheHandler).serve_forever()

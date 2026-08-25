@@ -361,6 +361,16 @@ main {
   overflow-wrap: anywhere;
 }
 
+.card-title-input {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  background: var(--bg);
+}
+
 .selection-item-controls {
   display: flex;
   gap: 0.3rem;

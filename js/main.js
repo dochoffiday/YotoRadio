@@ -1,5 +1,6 @@
 import { searchStations, fetchCountries, registerClick, isPlayable, mapCodecToFormat } from "./radioBrowser.js";
-import { startLogin, handleRedirectCallback, isLoggedIn, logout } from "./auth.js";
+import { startLogin, handleRedirectCallback, isLoggedIn, logout, getValidAccessToken } from "./auth.js";
+import { createCard } from "./yotoContent.js";
 
 const form = document.getElementById("search-form");
 const nameInput = document.getElementById("search-name");
@@ -12,6 +13,7 @@ const selectionSection = document.getElementById("selection");
 const selectionList = document.getElementById("selection-list");
 const selectionCount = document.getElementById("selection-count");
 const createCardButton = document.getElementById("create-card-button");
+const cardTitleInput = document.getElementById("card-title");
 
 const accountStatusEl = document.getElementById("account-status");
 const loginButton = document.getElementById("login-button");
@@ -54,11 +56,32 @@ function updateAccountUI() {
   const loggedIn = isLoggedIn();
   accountStatusEl.textContent = loggedIn ? "Connected to Yoto." : "Not connected to Yoto.";
   loginButton.textContent = loggedIn ? "Log out" : "Log in with Yoto";
-  createCardButton.disabled = true; // Card creation (POST /content) isn't wired up yet.
-  createCardButton.title = loggedIn
-    ? "Card creation isn't wired up yet"
-    : "Log in with Yoto first";
+  createCardButton.disabled = !loggedIn;
+  createCardButton.title = loggedIn ? "" : "Log in with Yoto first";
 }
+
+createCardButton.addEventListener("click", async () => {
+  const title = cardTitleInput.value.trim() || "My Radio Stations";
+  createCardButton.disabled = true;
+  setStatus("Creating your Yoto card...");
+
+  try {
+    const accessToken = await getValidAccessToken();
+    const card = await createCard({ title, stations: selectedStations, accessToken });
+    setStatus(`"${title}" created! Check the Yoto app to see it on your account.`);
+    selectedStations.length = 0;
+    renderSelection();
+    for (const button of addButtonsByUuid.values()) {
+      button.textContent = "＋ Add to card";
+      button.classList.remove("add-button--added");
+    }
+    console.log("Created card:", card);
+  } catch (err) {
+    setStatus(`Error: ${err.message}`);
+  } finally {
+    createCardButton.disabled = !isLoggedIn();
+  }
+});
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();

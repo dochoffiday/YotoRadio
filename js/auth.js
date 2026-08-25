@@ -121,6 +121,19 @@ async function exchangeCode(code, verifier) {
   storeTokens(await res.json());
 }
 
+// Returns a usable access token, refreshing first if it's expired or about
+// to expire. Throws (and logs out) if there's nothing to refresh with.
+export async function getValidAccessToken() {
+  const tokens = getTokens();
+  if (!tokens) throw new Error("Not logged in to Yoto.");
+
+  const EXPIRY_BUFFER_MS = 60_000;
+  if (tokens.expires_at - Date.now() < EXPIRY_BUFFER_MS) {
+    await refreshTokens();
+  }
+  return getTokens().access_token;
+}
+
 // Refresh tokens are single-use — the response always replaces both.
 export async function refreshTokens() {
   const tokens = getTokens();
