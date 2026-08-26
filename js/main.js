@@ -25,15 +25,22 @@ let currentAudio = null;
 let currentAudioButton = null;
 
 const FAVICON_FALLBACK = "img/favicon-fallback.png";
+const DRAFT_KEY = "yoto_radio_draft";
 
 // Ordered list of stations selected for the card being built. Order here is
-// the track/chapter order on the physical Yoto card.
+// the track/chapter order on the physical Yoto card. Persisted to
+// localStorage (station data + title only, not the cover file) so it
+// survives the full-page redirect to Yoto's login and back, or just closing
+// the tab and coming back later.
 const selectedStations = [];
 // stationuuid -> add/remove button, so station cards in the results grid can
 // reflect selection state without a full re-render.
 const addButtonsByUuid = new Map();
 
 setStatus("Search for a station on the left to get started.");
+restoreDraft();
+renderSelection();
+updateAccountUI();
 loadCountries();
 initAccount();
 refreshGeneratedCoverPreview();
@@ -43,6 +50,7 @@ loginButton.addEventListener("click", () => {
     logout();
     updateAccountUI();
   } else {
+    scrollStatusIntoView();
     startLogin().catch((err) => setStatus(`Error: ${err.message}`));
   }
 });
@@ -62,6 +70,29 @@ function updateAccountUI() {
   loginButton.textContent = loggedIn ? "Log out" : "Log in with Yoto";
   createCardButton.disabled = !loggedIn;
   createCardButton.title = loggedIn ? "" : "Log in with Yoto first";
+}
+
+function persistDraft() {
+  localStorage.setItem(DRAFT_KEY, JSON.stringify({
+    stations: selectedStations,
+    title: cardTitleInput.value,
+  }));
+}
+
+function restoreDraft() {
+  const raw = localStorage.getItem(DRAFT_KEY);
+  if (!raw) return;
+  try {
+    const draft = JSON.parse(raw);
+    if (Array.isArray(draft.stations)) selectedStations.push(...draft.stations);
+    if (draft.title) cardTitleInput.value = draft.title;
+  } catch {
+    // Corrupt draft; just start fresh.
+  }
+}
+
+function clearDraft() {
+  localStorage.removeItem(DRAFT_KEY);
 }
 
 let generatedCoverPreviewUrl = null;
@@ -88,6 +119,7 @@ async function refreshGeneratedCoverPreview() {
 }
 
 cardTitleInput.addEventListener("input", () => {
+  persistDraft();
   clearTimeout(coverPreviewDebounce);
   coverPreviewDebounce = setTimeout(refreshGeneratedCoverPreview, 400);
 });
@@ -105,6 +137,7 @@ createCardButton.addEventListener("click", async () => {
   const title = cardTitleInput.value.trim() || "My Radio Stations";
   const coverFile = coverInput.files[0] || null;
   createCardButton.disabled = true;
+  scrollStatusIntoView();
 
   try {
     const accessToken = await getValidAccessToken();
@@ -113,18 +146,27 @@ createCardButton.addEventListener("click", async () => {
     const coverToUpload = coverFile || (await generateDefaultCoverImage(title));
     const coverImageUrl = await uploadCoverImage(coverToUpload, accessToken);
 
-    setStatus("Creating your Yoto card...");
-    const card = await createCard({ title, stations: selectedStations, accessToken, coverImageUrl });
-    setStatus(`"${title}" created! Check the Yoto app to see it on your account.`);
-
-    selectedStations.length = 0;
-    renderSelection();
-    for (const button of addButtonsByUuid.values()) {
-      button.textContent = "＋ Add to card";
-      button.classList.remove("add-button--added");
+    const card = await createCard({
+      title,
+      stations: selectedStations,
+      accessToken,
+      coverImageUrl,
+      onProgress: (done, total) => setStatus(`Generating station icons (${done}/${total})...`),
+    });
+    const cardId = card?.card?.cardId;
+    if (cardId) {
+      setStatusLink(`"${title}" created!`, `https://my.yotoplay.com/cards/${cardId}`, "View your card →");
+    } else {
+      setStatus(`"${title}" created! Check the Yoto app to see it on your account.`);
     }
-    coverInput.value = "";
-    refreshGeneratedCoverPreview();
+
+    // Deliberately not clearing the selection/tray here: doing so hides the
+    // "Your Card" panel (selectionSection.hidden), which shrinks the
+    // sidebar right as the success message appears. If the page had been
+    // scrolled at all during the wait, the browser snaps the scroll
+    // position back to fit the now-shorter page — a jarring second jump
+    // right on top of the deliberate one from scrollStatusIntoView(). The
+    // tray staying put also just reads as "here's what you built."
     console.log("Created card:", card);
   } catch (err) {
     setStatus(`Error: ${err.message}`);
@@ -139,6 +181,7 @@ form.addEventListener("submit", async (e) => {
   const countrycode = countrySelect.value;
   const tag = tagInput.value.trim();
 
+  scrollStatusIntoView();
   setStatus("Searching...");
   resultsEl.innerHTML = "";
   addButtonsByUuid.clear();
@@ -154,6 +197,24 @@ form.addEventListener("submit", async (e) => {
 
 function setStatus(text) {
   statusEl.textContent = text;
+}
+
+function setStatusLink(text, url, linkLabel) {
+  statusEl.textContent = "";
+  statusEl.append(`${text} `);
+  const link = document.createElement("a");
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.textContent = linkLabel;
+  statusEl.appendChild(link);
+}
+
+// Scroll the status line into view once, at the start of a user-initiated
+// action — not on every status update within that action, or a multi-step
+// flow (upload cover, generate icons, create card...) visibly jumps the
+// page with every step instead of settling once.
+function scrollStatusIntoView() {
   statusEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
@@ -318,6 +379,7 @@ function moveSelection(index, delta) {
 }
 
 function renderSelection() {
+  persistDraft();
   selectionSection.hidden = selectedStations.length === 0;
   selectionCount.textContent = selectedStations.length ? `(${selectedStations.length} track${selectedStations.length === 1 ? "" : "s"})` : "";
 

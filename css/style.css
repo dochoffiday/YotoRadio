@@ -188,6 +188,12 @@ main {
   color: var(--muted);
   min-height: 1.2em;
   margin-top: 0;
+  scroll-margin-top: 1.5rem;
+}
+
+.status a {
+  color: var(--accent);
+  font-weight: 600;
 }
 
 .results {

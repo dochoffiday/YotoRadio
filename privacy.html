@@ -45,6 +45,11 @@
         because none exists.</li>
       <li><strong>Card creation.</strong> When you build a card, the station details you selected are sent
         directly from your browser to Yoto's content API to create the card on your account.</li>
+      <li><strong>Station icons.</strong> To generate each station's icon, your browser loads a small script from
+        <a href="https://dochoffiday.github.io/YotoPixelText/" target="_blank">dochoffiday.github.io/YotoPixelText</a>,
+        which renders a short label (derived from the station's name) into an icon entirely in your browser via a
+        hidden iframe — no station or personal data is sent anywhere except that short label, as part of the page
+        request to that site.</li>
       <li><strong>Fonts.</strong> The page font (Fredoka) loads from Google Fonts
         (<code>fonts.googleapis.com</code> / <code>fonts.gstatic.com</code>), subject to
         <a href="https://policies.google.com/privacy" target="_blank">Google's own privacy policy</a>.</li>
