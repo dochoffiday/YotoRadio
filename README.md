@@ -15,13 +15,15 @@ You'll need a client registered at [dashboard.yoto.dev](https://dashboard.yoto.d
 this flow is designed for a browser-only app):
 
 1. Register a client, with `http://localhost:5173/` as an allowed callback/logout URL for local dev.
-2. Scopes: `user:content:manage` and `offline_access`.
+2. Scopes: `user:content:manage`, `family:library:view`, and `offline_access`.
 3. Copy the client_id into [`js/config.js`](js/config.js).
 
-Then serve the site over HTTP (it uses ES modules, so `file://` won't work):
+Then serve the site over HTTP (it uses ES modules, so `file://` won't work). Use `devserver.py` rather than plain
+`python -m http.server` — it sends `Cache-Control: no-store` so edited JS/CSS doesn't get stuck in the browser's
+cache:
 
 ```bash
-python -m http.server 5173
+python devserver.py 5173
 ```
 
 Open `http://localhost:5173`.

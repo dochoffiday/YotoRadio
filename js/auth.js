@@ -5,7 +5,11 @@ import { YOTO_CLIENT_ID } from "./config.js";
 
 const AUTHORIZE_URL = "https://login.yotoplay.com/authorize";
 const TOKEN_URL = "https://login.yotoplay.com/oauth/token";
-const SCOPES = "user:content:manage offline_access";
+// family:library:view is separate from user:content:manage — Yoto's own
+// browser-auth tutorial uses it for GET /content/mine, while their content
+// API reference claims that same endpoint only needs user:content:view.
+// Requesting both since the docs disagree with each other.
+const SCOPES = "user:content:manage family:library:view offline_access";
 
 const TOKENS_KEY = "yoto_tokens";
 const VERIFIER_KEY = "yoto_pkce_verifier";
@@ -85,6 +89,7 @@ export async function handleRedirectCallback() {
   const url = new URL(window.location.href);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
+
   if (!code) return;
 
   const expectedState = sessionStorage.getItem(STATE_KEY);
@@ -115,9 +120,11 @@ async function exchangeCode(code, verifier) {
       redirect_uri: redirectUri(),
     }),
   });
+  
   if (!res.ok) {
     throw new Error(`Yoto token exchange failed: ${res.status} ${await res.text()}`);
   }
+
   storeTokens(await res.json());
 }
 
