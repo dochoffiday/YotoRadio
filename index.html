@@ -38,6 +38,15 @@
         <p class="selection-hint">Each station becomes its own track on the card, in this order.</p>
         <ol id="selection-list" class="selection-list"></ol>
         <input id="card-title" class="card-title-input" type="text" placeholder="Card title" value="My Radio Stations" autocomplete="off" />
+
+        <label class="cover-upload-label">
+          Cover image (optional — a default is generated if you don't upload one)
+          <div class="cover-upload">
+            <img id="cover-preview" class="cover-preview" hidden alt="Cover preview" />
+            <input id="cover-input" type="file" accept="image/*" />
+          </div>
+        </label>
+
         <button id="create-card-button" type="button" class="create-card-button" disabled title="Log in with Yoto first">
           Create Yoto Card
         </button>

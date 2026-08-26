@@ -1,6 +1,7 @@
 import { searchStations, fetchCountries, registerClick, isPlayable, mapCodecToFormat } from "./radioBrowser.js";
 import { startLogin, handleRedirectCallback, isLoggedIn, logout, getValidAccessToken } from "./auth.js";
-import { createCard } from "./yotoContent.js";
+import { createCard, uploadCoverImage } from "./yotoContent.js";
+import { generateDefaultCoverImage } from "./coverArt.js";
 
 const form = document.getElementById("search-form");
 const nameInput = document.getElementById("search-name");
@@ -14,6 +15,8 @@ const selectionList = document.getElementById("selection-list");
 const selectionCount = document.getElementById("selection-count");
 const createCardButton = document.getElementById("create-card-button");
 const cardTitleInput = document.getElementById("card-title");
+const coverInput = document.getElementById("cover-input");
+const coverPreview = document.getElementById("cover-preview");
 
 const accountStatusEl = document.getElementById("account-status");
 const loginButton = document.getElementById("login-button");
@@ -33,6 +36,7 @@ const addButtonsByUuid = new Map();
 setStatus("Search for a station on the left to get started.");
 loadCountries();
 initAccount();
+refreshGeneratedCoverPreview();
 
 loginButton.addEventListener("click", () => {
   if (isLoggedIn()) {
@@ -60,21 +64,67 @@ function updateAccountUI() {
   createCardButton.title = loggedIn ? "" : "Log in with Yoto first";
 }
 
+let generatedCoverPreviewUrl = null;
+let coverPreviewDebounce = null;
+
+function setCoverPreview(url) {
+  if (generatedCoverPreviewUrl) URL.revokeObjectURL(generatedCoverPreviewUrl);
+  generatedCoverPreviewUrl = url;
+  coverPreview.src = url;
+  coverPreview.hidden = false;
+}
+
+async function refreshGeneratedCoverPreview() {
+  if (coverInput.files[0]) return;
+  const title = cardTitleInput.value.trim() || "My Radio Stations";
+  try {
+    const file = await generateDefaultCoverImage(title);
+    // Bail if the user picked a file (or the title moved on) while we were generating.
+    if (coverInput.files[0]) return;
+    setCoverPreview(URL.createObjectURL(file));
+  } catch {
+    // Preview is a nicety; leave whatever was showing (or nothing) if this fails.
+  }
+}
+
+cardTitleInput.addEventListener("input", () => {
+  clearTimeout(coverPreviewDebounce);
+  coverPreviewDebounce = setTimeout(refreshGeneratedCoverPreview, 400);
+});
+
+coverInput.addEventListener("change", () => {
+  const file = coverInput.files[0];
+  if (!file) {
+    refreshGeneratedCoverPreview();
+    return;
+  }
+  setCoverPreview(URL.createObjectURL(file));
+});
+
 createCardButton.addEventListener("click", async () => {
   const title = cardTitleInput.value.trim() || "My Radio Stations";
+  const coverFile = coverInput.files[0] || null;
   createCardButton.disabled = true;
-  setStatus("Creating your Yoto card...");
 
   try {
     const accessToken = await getValidAccessToken();
-    const card = await createCard({ title, stations: selectedStations, accessToken });
+
+    setStatus(coverFile ? "Uploading cover image..." : "Generating a cover image...");
+    const coverToUpload = coverFile || (await generateDefaultCoverImage(title));
+    const coverImageUrl = await uploadCoverImage(coverToUpload, accessToken);
+
+    setStatus("Creating your Yoto card...");
+    const card = await createCard({ title, stations: selectedStations, accessToken, coverImageUrl });
     setStatus(`"${title}" created! Check the Yoto app to see it on your account.`);
+
     selectedStations.length = 0;
     renderSelection();
     for (const button of addButtonsByUuid.values()) {
       button.textContent = "＋ Add to card";
       button.classList.remove("add-button--added");
     }
+    coverInput.value = "";
+    refreshGeneratedCoverPreview();
     console.log("Created card:", card);
   } catch (err) {
     setStatus(`Error: ${err.message}`);
@@ -104,6 +154,7 @@ form.addEventListener("submit", async (e) => {
 
 function setStatus(text) {
   statusEl.textContent = text;
+  statusEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
 async function loadCountries() {

@@ -371,6 +371,34 @@ main {
   background: var(--bg);
 }
 
+.cover-upload-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+.cover-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+.cover-preview {
+  width: 100%;
+  aspect-ratio: 638 / 1011;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
+.cover-upload input[type="file"] {
+  font-size: 0.8rem;
+  max-width: 100%;
+}
+
 .selection-item-controls {
   display: flex;
   gap: 0.3rem;

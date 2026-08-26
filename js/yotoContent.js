@@ -4,6 +4,7 @@
 import { mapCodecToFormat } from "./radioBrowser.js";
 
 const CONTENT_URL = "https://api.yotoplay.com/content";
+const COVER_UPLOAD_URL = "https://api.yotoplay.com/media/coverImage/user/me/upload";
 
 function stationToChapter(station, index) {
   const key = String(index + 1).padStart(2, "0");
@@ -30,11 +31,34 @@ function stationToChapter(station, index) {
   };
 }
 
-export async function createCard({ title, stations, accessToken }) {
+export async function uploadCoverImage(file, accessToken) {
+  const res = await fetch(`${COVER_UPLOAD_URL}?coverType=default`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": file.type || "image/png",
+    },
+    body: file,
+  });
+
+  if (!res.ok) {
+    throw new Error(`Cover image upload failed: ${res.status} ${await res.text()}`);
+  }
+
+  const { coverImage } = await res.json();
+  return coverImage.mediaUrl;
+}
+
+export async function createCard({ title, stations, accessToken, coverImageUrl }) {
+  const metadata = { description: "Created with Yoto Radio Station Picker" };
+  if (coverImageUrl) {
+    metadata.cover = { imageL: coverImageUrl };
+  }
+
   const body = {
     title,
     content: { chapters: stations.map(stationToChapter) },
-    metadata: { description: "Created with Yoto Radio Station Picker" },
+    metadata,
   };
 
   const res = await fetch(CONTENT_URL, {
