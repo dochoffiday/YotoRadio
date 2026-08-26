@@ -78,6 +78,10 @@ export async function startLogin() {
     code_challenge_method: "S256",
     scope: SCOPES,
     state,
+    // Auth0-issued tokens are only valid for /userinfo without this — every
+    // yotoplay.com API example includes it. Omitting it is what produced the
+    // blanket "explicit deny" on every api.yotoplay.com call.
+    audience: "https://api.yotoplay.com",
   });
 
   window.location.href = `${AUTHORIZE_URL}?${params.toString()}`;

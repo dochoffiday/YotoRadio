@@ -4,38 +4,8 @@ const API_BASE = "https://api.yotoplay.com";
 
 const PROBES = [
   { name: "GET /content/mine", method: "GET", path: "/content/mine", scope: "user:content:view" },
-  { name: "GET /device-v2/devices/mine", method: "GET", path: "/device-v2/devices/mine", scope: "family:devices:view" },
   { name: "GET /media/displayIcons/user/me", method: "GET", path: "/media/displayIcons/user/me", scope: "user:icons:manage" },
   { name: "GET /media/displayIcons/user/yoto", method: "GET", path: "/media/displayIcons/user/yoto", scope: "user:icons:manage (public icons)" },
-  {
-    name: "POST /content",
-    method: "POST",
-    path: "/content",
-    scope: "user:content:manage",
-    body: {
-      title: "Debug probe card (harmless if it succeeds — safe to delete)",
-      content: {
-        chapters: [
-          {
-            key: "01",
-            title: "Debug probe",
-            overlayLabel: "1",
-            display: {},
-            tracks: [
-              {
-                key: "01",
-                type: "stream",
-                format: "mp3",
-                title: "Debug probe",
-                trackUrl: "https://yoto.dev/audio/autumn-3.mp3",
-                display: {},
-              },
-            ],
-          },
-        ],
-      },
-    },
-  },
 ];
 
 const accountStatusEl = document.getElementById("account-status");
