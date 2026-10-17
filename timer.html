@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yoto Timer ⏱️</title>
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="img/logo-radio.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    main { max-width: 700px; }
+    .timer { display: flex; align-items: center; gap: 1rem; border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 0.6rem; }
+    .timer-icon { width: 64px; height: 64px; image-rendering: pixelated; background: repeating-conic-gradient(#f4f1ef 0% 25%, #fff 0% 50%) 0 0 / 8px 8px; border-radius: 4px; flex-shrink: 0; }
+    .timer-body { flex: 1; min-width: 0; }
+    .timer-body h2 { margin: 0 0 0.2rem; font-size: 1.05rem; }
+    .timer-body p { margin: 0 0 0.4rem; color: var(--muted); font-size: 0.85rem; }
+    .timer-body audio { width: 100%; }
+    .create-button { padding: 0.6rem 1.2rem; border: none; border-radius: 6px; background: var(--accent); color: white; font-size: 1rem; cursor: pointer; }
+    .create-button:disabled { opacity: 0.5; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>Yoto Timer ⏱️</h1>
+    <p class="subtitle">Prototype: countdown timers with spoken announcements and an animated icon.</p>
+  </header>
+
+  <main>
+    <p><a href="index.html">← Back to the app</a></p>
+    <p id="account-status"></p>
+
+    <section id="timers"></section>
+
+    <p class="hint">Before creating the card, commit and push <code>timer/audio/</code> so the mp3s are live on
+    GitHub Pages — the player streams them from there, not from this machine.</p>
+
+    <button id="create-button" type="button" class="create-button" disabled>Create timer card</button>
+    <p id="status" class="status"></p>
+  </main>
+
+  <script type="module" src="js/timer.js"></script>
+</body>
+</html>
